@@ -8,6 +8,7 @@ import Button from '@material-ui/core/Button';
 import Carousel from './Carousel'
 import { Modal } from 'antd';
 import { Container, Col, Row, Image } from 'react-bootstrap';
+import Form from "./registrationForm"
 import 'antd/dist/antd.css';
 
 const { Header, Footer, Sider, Content } = Layout;
@@ -44,7 +45,7 @@ class App extends React.Component {
 
   handleOKRegistrationForm = e => {
     this.setState((state) => {
-      return {...state, visibleForm: true}
+      return {...state, visibleForm: false}
     });
   }
 
@@ -93,16 +94,11 @@ class App extends React.Component {
               <p>Some contents...</p>
               <p>Some contents...</p>
             </Modal>
-            <Modal
-              title="Registration Form"
+            <Form
               visible={this.state.visibleForm}
               onOk={this.handleOKRegistrationForm}
               onCancel={this.handleCancelRegistrationForm}
-            >
-              <p>Some contents...</p>
-              <p>Some contents...</p>
-              <p>Some contents...</p>
-            </Modal>
+            />
             <Container style={{paddingTop: "50px"}}>
               <Row>
                 <Col>
