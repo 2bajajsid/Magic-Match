@@ -9,6 +9,7 @@ import Carousel from './Carousel'
 import { Modal } from 'antd';
 import { Container, Col, Row, Image } from 'react-bootstrap';
 import Form from "./registrationForm"
+import Profile from './userProfile'
 import 'antd/dist/antd.css';
 
 const { Header, Footer, Sider, Content } = Layout;
@@ -37,15 +38,14 @@ class App extends React.Component {
   }
 
   handleOk = e => {
-    console.log(e);
     this.setState((state) => {
       return {...state, visible: false}
     });
   };
 
-  handleOKRegistrationForm = e => {
+  handleOKRegistrationForm = u => {
     this.setState((state) => {
-      return {...state, visibleForm: false}
+      return {...state, visibleForm: false, user: u}
     });
   }
 
@@ -78,10 +78,18 @@ class App extends React.Component {
                             Sign-In
                           </Button>
     }
+    var avatar = null; 
+    if (this.state.user){
+      avatar = <Container style={{maxWidth: "1000px"}}>
+                  <Profile userName={this.state.user.userName} firstName={this.state.user.firstName} lastName={this.state.user.lastName} 
+                            pic="http://tss.edu.au/wp-content/uploads/2018/01/avatar.b6a87.png"
+                  />
+                </Container>
+    }
     return (
       <div className="App">
             <Title style={{padding:"10px", marginTop: "10px"}}> 
-              Hackathon for Tinder 
+             Tinder for Hackathon
             </Title>
             {conditionalButton}
             <Modal
@@ -99,6 +107,7 @@ class App extends React.Component {
               onOk={this.handleOKRegistrationForm}
               onCancel={this.handleCancelRegistrationForm}
             />
+            {avatar}
             <Container style={{paddingTop: "50px"}}>
               <Row>
                 <Col>

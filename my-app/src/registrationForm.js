@@ -49,7 +49,7 @@ const RegistrationForm = Form.create({name: 'form_in_modal'})(
                 firstName: "",
                 lastName: ""
             })
-            this.props.onOk()
+            this.props.onOk(this.state)
         }
 
         render() {
