@@ -10,7 +10,21 @@ import { Modal } from 'antd';
 import { Container, Col, Row, Image } from 'react-bootstrap';
 import Form from "./registrationForm"
 import Profile from './userProfile'
+import ChatBot from 'react-simple-chatbot';
 import 'antd/dist/antd.css';
+
+const steps = [
+  {
+    id: '0',
+    message: 'Welcome to react chatbot!',
+    trigger: '1',
+  },
+  {
+    id: '1',
+    message: 'Bye!',
+    end: true,
+  },
+];
 
 const { Header, Footer, Sider, Content } = Layout;
 const { Title } = Typography;
@@ -21,7 +35,12 @@ class App extends React.Component {
     super(props)
   }
 
-  state = { visible1: false, user: null, visibleForm: false};
+  state = { visible1: false, 
+            visibleUsersList: false, 
+            user: null, 
+            visibleForm: false,
+            userResponses: []
+          };
 
   showModal = () => {
     console.log("Modal on click called!")
@@ -37,15 +56,27 @@ class App extends React.Component {
     });
   }
 
-  handleOk = e => {
+  showUsersList = () => {
     this.setState((state) => {
-      return {...state, visible: false}
+      return {...state, visibleUsersList: true}
+    });
+  }
+
+  handleOk = () => {
+    this.setState((state) => {
+      return {...state, visible: false, informationAdded: true}
     });
   };
 
   handleOKRegistrationForm = u => {
     this.setState((state) => {
       return {...state, visibleForm: false, user: u}
+    });
+  }
+
+  handleOKShowUsersList = () => {
+    this.setState((state) => {
+      return {...state, visibleUsersList: false}
     });
   }
 
@@ -57,21 +88,48 @@ class App extends React.Component {
   };
 
   handleCancelRegistrationForm = e => {
+    console.log("Registration Form should be cancelled")
     this.setState((state) => {
       return {...state, visibleForm: false}
     });
   }
 
+  handleCancelUsersList = () => {
+    this.setState((state) => {
+      return {...state, visibleUsersList: false}
+    });
+  }
+
+  delay = (t, v) => {
+    return new Promise(function(resolve) { 
+        setTimeout(resolve.bind(null, v), t)
+    });
+ }
+
+  handleEnd = () => {
+    this.delay(2 * 1000)
+    .then(() => {
+      console.log(this.state)
+      this.handleOk()
+    })
+  }
+
   render(){
     var conditionalButton; 
-    if (this.state.user){
+    if ((this.state.user) && (!this.state.informationAdded)){
       conditionalButton = <div>
                               <Button onClick={this.showModal} variant="contained" color="primary" style={{padding: "10px", margin: "10px"}}>
                                 Tell us more about Yourself 
                               </Button>
-                              <Button variant="contained" color="primary" style={{padding: "10px", margin: "10px"}}>
+                              <Button variant="contained" color="primary" onClick={this.showUsersList} style={{padding: "10px", margin: "10px"}}>
                                 Find your Team Members
                               </Button>
+                          </div>
+    } else if (this.state.user) { 
+      conditionalButton = <div>
+                            <Button variant="contained" color="primary" style={{padding: "10px", margin: "10px"}}>
+                              Find your Team Members
+                            </Button>
                           </div>
     } else {
       conditionalButton = <Button onClick={this.showRegistrationForm} variant="contained" color="primary" style={{padding: "10px", margin: "10px"}}>
@@ -86,6 +144,8 @@ class App extends React.Component {
                   />
                 </Container>
     }
+
+    var firstName = this.state.user ? this.state.user.firstName : null; 
     return (
       <div className="App">
             <Title style={{padding:"10px", marginTop: "10px"}}> 
@@ -95,13 +155,61 @@ class App extends React.Component {
             <Modal
               title="Basic Modal"
               visible={this.state.visible}
-              onOk={this.handleOk}
               onCancel={this.handleCancel}
+              footer={null}
             >
-              <p>Some contents...</p>
-              <p>Some contents...</p>
-              <p>Some contents...</p>
+              <ChatBot
+                handleEnd={this.handleEnd}
+                steps={[
+                  {
+                    id: '1',
+                    message: `How are you doing today ${firstName} ?`,
+                    trigger: '2',
+                  },
+                  {
+                    id: '2',
+                    user: true,
+                    validator: (value) => {
+                      this.setState((state) => {
+                        return {...state, 
+                                userResponses: [...this.state.userResponses, value]
+                              }
+                      })
+                      return true; 
+                    }, 
+                    trigger: '3',
+                  },
+                  {
+                    id: '3',
+                    message: `That's nice to know! How many years of coding experience do you have?`,
+                    trigger: '4',
+                  },
+                  {
+                    id: '4', 
+                    validator: (value) => {
+                      this.setState((state) => {
+                        return {...state, 
+                                userResponses: [...this.state.userResponses, value]
+                              }
+                      })
+                      return true; 
+                    }, 
+                    user: true,
+                    trigger: `5`
+                  }, 
+                  {
+                    id: '5',
+                    message: `Will take that into note.`,
+                    end: true
+                  }
+                ]}
+              />
             </Modal>
+            <Modal
+              visible={this.state.visibleUsersList}
+              onOk={this.handleOKShowUsersList}
+              onCancel={this.handleCancelUsersList}
+            />
             <Form
               visible={this.state.visibleForm}
               onOk={this.handleOKRegistrationForm}
