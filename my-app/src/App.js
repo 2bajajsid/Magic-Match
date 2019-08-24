@@ -19,45 +19,85 @@ class App extends React.Component {
     super(props)
   }
 
-  state = { visible1: false };
+  state = { visible1: false, user: null, visibleForm: false};
 
   showModal = () => {
-    this.setState({
-      visible: true,
+    console.log("Modal on click called!")
+    this.setState((state) => {
+      return {...state, visible: true}
     });
   };
+
+  showRegistrationForm = () => {
+    console.log("Handler called")
+    this.setState((state) => {
+      return {...state, visibleForm: true}
+    });
+  }
 
   handleOk = e => {
     console.log(e);
-    this.setState({
-      visible: false,
+    this.setState((state) => {
+      return {...state, visible: false}
     });
   };
+
+  handleOKRegistrationForm = e => {
+    this.setState((state) => {
+      return {...state, visibleForm: true}
+    });
+  }
 
   handleCancel = e => {
     console.log(e);
-    this.setState({
-      visible: false,
+    this.setState((state) => {
+      return {...state, visible: false}
     });
   };
 
+  handleCancelRegistrationForm = e => {
+    this.setState((state) => {
+      return {...state, visibleForm: false}
+    });
+  }
+
   render(){
+    var conditionalButton; 
+    if (this.state.user){
+      conditionalButton = <div>
+                              <Button onClick={this.showModal} variant="contained" color="primary" style={{padding: "10px", margin: "10px"}}>
+                                Tell us more about Yourself 
+                              </Button>
+                              <Button variant="contained" color="primary" style={{padding: "10px", margin: "10px"}}>
+                                Find your Team Members
+                              </Button>
+                          </div>
+    } else {
+      conditionalButton = <Button onClick={this.showRegistrationForm} variant="contained" color="primary" style={{padding: "10px", margin: "10px"}}>
+                            Sign-In
+                          </Button>
+    }
     return (
       <div className="App">
             <Title style={{padding:"10px", marginTop: "10px"}}> 
               Hackathon for Tinder 
             </Title>
-            <Button onClick={this.showModal} variant="contained" color="primary" style={{padding: "10px", margin: "10px"}}>
-              Tell us about Yourself 
-            </Button>
-            <Button variant="contained" color="primary" style={{padding: "10px", margin: "10px"}}>
-              Find your Team Members
-            </Button>
+            {conditionalButton}
             <Modal
               title="Basic Modal"
               visible={this.state.visible}
               onOk={this.handleOk}
               onCancel={this.handleCancel}
+            >
+              <p>Some contents...</p>
+              <p>Some contents...</p>
+              <p>Some contents...</p>
+            </Modal>
+            <Modal
+              title="Registration Form"
+              visible={this.state.visibleForm}
+              onOk={this.handleOKRegistrationForm}
+              onCancel={this.handleCancelRegistrationForm}
             >
               <p>Some contents...</p>
               <p>Some contents...</p>
