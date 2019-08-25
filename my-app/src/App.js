@@ -146,8 +146,7 @@ class App extends React.Component {
 
     var userRandos = [{userName: "Poppy", firstName: "Drake", lastName: "Mahbed", pic: "https://studybreaks.com/wp-content/uploads/2018/01/Drake-1.jpg"}, 
                   {userName: "JB", firstName: "Justin", lastName: "Beiber", pic: "https://www.justinbiebermusic.com/wp-content/themes/justinbieber2/images/bieber-news.png"}, 
-                  {userName: "Maggie", firstName: "Megan", lastName: "Fox", pic: "https://m.media-amazon.com/images/M/MV5BMTc5MjgyMzk4NF5BMl5BanBnXkFtZTcwODk2OTM4Mg@@._V1_UY1200_CR105,0,630,1200_AL_.jpg"}, 
-                  {userName: "Sel", firstName: "Selena", lastName: "Gomez", pic: "https://www.cheatsheet.com/wp-content/uploads/2019/08/Selena-Gomez.jpg"}]
+                  {userName: "Maggie", firstName: "Megan", lastName: "Fox", pic: "https://m.media-amazon.com/images/M/MV5BMTc5MjgyMzk4NF5BMl5BanBnXkFtZTcwODk2OTM4Mg@@._V1_UY1200_CR105,0,630,1200_AL_.jpg"}]
 
     var users = [{userName: "Ibra", firstName: "Zlatan", lastName: "Ibrah", pic: "https://studybreaks.com/wp-content/uploads/2018/01/Drake-1.jpg"}]
 
@@ -156,10 +155,10 @@ class App extends React.Component {
     if ((this.state.showTeamMembers) && (!this.state.informationAdded)){
       content = <ContentTeamMembers Members={userRandos} />
     } else if (this.state.showTeamMembers){
-      content = <ContentTeamMembers Members={users} />
+      content = <ContentTeamMembers Members={userRandos.slice(0, this.state.userResponses[2])} />
     }
 
-    var title = !this.state.user ? <Typography variant="h1" component="h2" style={{padding:"10px", marginTop: "40px"}} gutterBottom> Magic Match </Typography> : null
+    var title = !this.state.user ? <Typography variant="h1" component="h2" style={{color: "white", padding:"10px", marginTop: "40px"}} gutterBottom> Magic Match </Typography> : null
     return (
       <div className="App">
             {title}
