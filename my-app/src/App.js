@@ -12,24 +12,10 @@ import Form from "./registrationForm"
 import Profile from './userProfile'
 import ContentTeamMembers from './contentTeamMembers'
 import ContentImages from './contentImages'
-import Bot from './chatBot'
+import ChatBot from 'react-simple-chatbot';
+import axios from 'axios'; 
 import 'antd/dist/antd.css';
-
-const steps = [
-  {
-    id: '0',
-    message: 'Welcome to react chatbot!',
-    trigger: '1',
-  },
-  {
-    id: '1',
-    message: 'Bye!',
-    end: true,
-  },
-];
-
-const { Header, Footer, Sider, Content } = Layout;
-const { Title } = Typography;
+import fs from 'fs';
 
 class App extends React.Component {
 
@@ -114,7 +100,13 @@ class App extends React.Component {
   handleEnd = () => {
     this.delay(2 * 1000)
     .then(() => {
-      console.log(this.state)
+      var body =  {
+        firstName: this.state.user.firstName, 
+        lastName: this.state.user.lastName,
+        username: this.state.user.userName,
+        responses: this.state.userResponses
+      }
+      console.log(body)
       this.handleOk()
     })
   }
@@ -152,12 +144,22 @@ class App extends React.Component {
 
     var firstName = this.state.user ? this.state.user.firstName : null; 
 
+    var userRandos = [{userName: "Poppy", firstName: "Drake", lastName: "Mahbed", pic: "https://studybreaks.com/wp-content/uploads/2018/01/Drake-1.jpg"}, 
+                  {userName: "JB", firstName: "Justin", lastName: "Beiber", pic: "https://www.justinbiebermusic.com/wp-content/themes/justinbieber2/images/bieber-news.png"}, 
+                  {userName: "Maggie", firstName: "Megan", lastName: "Fox", pic: "https://m.media-amazon.com/images/M/MV5BMTc5MjgyMzk4NF5BMl5BanBnXkFtZTcwODk2OTM4Mg@@._V1_UY1200_CR105,0,630,1200_AL_.jpg"}, 
+                  {userName: "Sel", firstName: "Selena", lastName: "Gomez", pic: "https://www.cheatsheet.com/wp-content/uploads/2019/08/Selena-Gomez.jpg"}]
+
+    var users = [{userName: "Ibra", firstName: "Zlatan", lastName: "Ibrah", pic: "https://studybreaks.com/wp-content/uploads/2018/01/Drake-1.jpg"}]
+
     var content = <ContentImages />
-    if (this.state.showTeamMembers){
-      content = <ContentTeamMembers />
+
+    if ((this.state.showTeamMembers) && (!this.state.informationAdded)){
+      content = <ContentTeamMembers Members={userRandos} />
+    } else if (this.state.showTeamMembers){
+      content = <ContentTeamMembers Members={users} />
     }
 
-    var title = !this.state.user ? <Title style={{padding:"10px", marginTop: "10px"}}> Tinder for Hackathon </Title> : null
+    var title = !this.state.user ? <Typography variant="h1" component="h2" style={{padding:"10px", marginTop: "40px"}} gutterBottom> Magic Match </Typography> : null
     return (
       <div className="App">
             {title}
@@ -168,7 +170,161 @@ class App extends React.Component {
               onCancel={this.handleCancel}
               footer={null}
             >
-              <Bot firstName={firstName}/>
+              <ChatBot
+                handleEnd={this.handleEnd}
+                steps={[
+                  {
+                    id: '1',
+                    message: `How are you doing today ${firstName} ?`,
+                    trigger: '2',
+                  },
+                  {
+                    id: '2',
+                    user: true, 
+                    trigger: '3',
+                  },
+                  {
+                    id: '3',
+                    message: `So ${firstName}, are you excited for Hack the 6ix?`,
+                    trigger: '4',
+                  },
+                  {
+                    id: '4', 
+                    validator: (value) => {
+                      this.setState((state) => {
+                        return {...state, 
+                                userResponses: [...this.state.userResponses, value]
+                              }
+                      })
+                      return true; 
+                    }, 
+                    user: true,
+                    trigger: `5`
+                  }, 
+                  {
+                    id: '5',
+                    message: `How many team mates do you already have?`,
+                    trigger: `6`
+                  }, {
+                    id: '6', 
+                    user: true, 
+                    validator: (value) => {
+                      this.setState((state) => {
+                        return {...state, 
+                                userResponses: [...this.state.userResponses, value]
+                              }
+                      })
+                      return true; 
+                    },
+                    trigger: `7`
+                  },
+                   {
+                    id: '7', 
+                    message: `Don't worry! We will help you find the rest of your team!!`,
+                    trigger: `8`
+                  }, 
+                  {
+                    id: `8`,
+                    message: `How many team mates are you looking for?`,
+                    trigger: `9`
+                  }, 
+                  {
+                    id: '9',
+                    validator: (value) => {
+                      this.setState((state) => {
+                        return {...state, 
+                                userResponses: [...this.state.userResponses, value]
+                              }
+                      })
+                      return true; 
+                    },
+                    user: true, 
+                    trigger: '10'
+                  }, 
+                  {
+                    id: '10', 
+                    message: `What areas of technology are you interested in learning more about?`,
+                    trigger:'11'
+                  }, 
+                  {
+                    id: '11',
+                    validator: (value) => {
+                      this.setState((state) => {
+                        return {...state, 
+                                userResponses: [...this.state.userResponses, value]
+                              }
+                      })
+                      return true; 
+                    },
+                    user: true, 
+                    trigger: '12'
+                  }, 
+                  {
+                    id: '12', 
+                    message: 'And ... what language are you most proficient in developing with?',
+                    trigger: '13', 
+                  },
+                  {
+                    id: '13',
+                    validator: (value) => {
+                      this.setState((state) => {
+                        return {...state, 
+                                userResponses: [...this.state.userResponses, value]
+                              }
+                      })
+                      return true; 
+                    },
+                    user: true, 
+                    trigger: '14'
+                  }, 
+                  {
+                    id: '14', 
+                    message: 'What is your level of education to date?',
+                    trigger: '15'
+                  }, 
+                  {
+                    id: '15',
+                    validator: (value) => {
+                      this.setState((state) => {
+                        return {...state, 
+                                userResponses: [...this.state.userResponses, value]
+                              }
+                      })
+                      return true; 
+                    },
+                    user: true, 
+                    trigger: '16'
+                  }, 
+                  {
+                    id: '16',
+                    message: 'Tell us about your experiences developing?',
+                    trigger: '17'
+                  }, 
+                  {
+                    id: '17',
+                    validator: (value) => {
+                      this.setState((state) => {
+                        return {...state, 
+                                userResponses: [...this.state.userResponses, value]
+                              }
+                      })
+                      return true; 
+                    },
+                      user: true, 
+                      trigger: '18'
+                  }, 
+                  {
+                    id: '18',
+                    message: 'Yay !! Got it all!',
+                    trigger: '19'
+                  }, 
+                  {
+                    id: '19',
+                    message: 'We have enough intelligence to recommend your potential Hackathon winning team!!',
+                    end: true
+                  }
+                ]}
+              />
             </Modal>
             <Modal
               visible={this.state.visibleUsersList}

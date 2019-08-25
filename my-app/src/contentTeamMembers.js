@@ -15,23 +15,18 @@ import 'antd/dist/antd.css';
 
 class C extends Component {
     render(){
+        var members = this.props.Members.reduce((total, m)=> {
+            total.push(<Col style={{paddingTop: "20px"}} md="6"> 
+                            <Profile userName={m.userName} firstName={m.firstName} lastName={m.lastName}
+                                pic={m.pic}/>
+                        </Col>)
+            return total
+        }, [])
         return(
             <Container style={{paddingTop: "50px"}}>
+                    {/* <h1> ${this.props.MembersRequired} </h1> */}
                      <Row className="justify-content-md-center">
-                      <Col md="6"> 
-                      <Profile userName="Sampler" firstName="Sampler" lastName="Sampler"
-                            pic="https://studybreaks.com/wp-content/uploads/2018/01/Drake-1.jpg"/>
-                      </Col>
-                      <Col md="6">
-                      <Profile userName="Sampler" firstName="Sampler" lastName="Sampler"
-                            pic="https://pbs.twimg.com/profile_images/929030268043845633/ilS1ri2v.jpg"/>
-                      </Col>
-                    </Row>
-                    <Row className="justify-content-md-center">
-                      <Col md="6">
-                        <Profile userName="Sampler" firstName="Sampler" lastName="Sampler"
-                            pic="https://studybreaks.com/wp-content/uploads/2018/01/Drake-1.jpg"/>
-                      </Col>
+                      {members}
                     </Row>
             </Container>
         )

@@ -3,13 +3,27 @@
 }
 
 body{
-  background-image: url(https://images.pexels.com/photos/988872/pexels-photo-988872.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940)
+  background-image: url(https://www.larutadelsorigens.cat/wallpic/full/35-355769_simple-gif-wallpaper-cartoon.gif);
+  background-repeat: no-repeat; 
+  background-size: cover;
 }
+  
 
 .App-logo {
   animation: App-logo-spin infinite 20s linear;
   height: 40vmin;
   pointer-events: none;
+}
+
+.image {
+  -webkit-transition: opacity 1s ease-in-out;
+  -moz-transition: opacity 1s ease-in-out;
+  -o-transition: opacity 1s ease-in-out;
+  transition: opacity 1s ease-in-out;
+}
+
+.image:hover {
+  opacity:0;
 }
 
 .ant-carousel .slick-slide {
